@@ -7,3 +7,6 @@ numpy>=2.3,<3
 joblib>=1.5,<2
 pytest>=8.4,<9
 httpx>=0.28,<1
+pandas>=2.2,<4
+pyarrow>=18,<30
+

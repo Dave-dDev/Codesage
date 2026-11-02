@@ -1,4 +1,4 @@
-# Python
+﻿# Python
 .venv/
 __pycache__/
 *.py[cod]
@@ -10,6 +10,8 @@ backend/.pytest_cache/
 data/netsentry.db
 data/samples/*.pcap
 data/models/*.joblib
+*.parquet
+*.pid
 *.log
 pip-*.pid
 pnpm-*.pid
@@ -26,4 +28,5 @@ frontend/.vite/
 .idea/
 Thumbs.db
 .DS_Store
+
 

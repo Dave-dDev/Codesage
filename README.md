@@ -183,6 +183,10 @@ on the next backend startup.
 Remove-Item data\models\isolation_forest.joblib
 ```
 
+## UNSW-NB15 benchmark
+
+An offline flow-level benchmark trained from the supplied UNSW-NB15 test-set Parquet is documented in [docs/unsw_nb15_benchmark.md](docs/unsw_nb15_benchmark.md). The benchmark is intentionally not loaded into the live PCAP dashboard because the dataset has no IP addresses, ports, or timestamps.
+
 ## Tests
 
 ```powershell

@@ -1,0 +1,254 @@
+{
+  "generated_at": "2026-11-02T21:35:44.478472+00:00",
+  "dataset": {
+    "source": "UNSW_NB15_testing-set.parquet",
+    "original_rows": 82332,
+    "duplicate_rows_removed": 32361,
+    "unique_rows": 49971,
+    "benign_rows": 31610,
+    "attack_rows": 18361,
+    "null_values": 0,
+    "infinite_values": 0,
+    "attack_categories": {
+      "Normal": 31610,
+      "Exploits": 7482,
+      "Fuzzers": 4415,
+      "Reconnaissance": 2127,
+      "Generic": 1643,
+      "DoS": 1598,
+      "Analysis": 386,
+      "Shellcode": 370,
+      "Backdoor": 296,
+      "Worms": 44
+    }
+  },
+  "split": {
+    "strategy": "stratified row-level holdout; duplicates removed before splitting",
+    "train_rows": 29982,
+    "validation_rows": 7495,
+    "test_rows": 12494,
+    "train_attack_rows": 11016,
+    "validation_attack_rows": 2754,
+    "test_attack_rows": 4591
+  },
+  "model": {
+    "name": "RandomForestClassifier",
+    "n_estimators": 350,
+    "class_weight": "balanced_subsample",
+    "feature_columns": [
+      "dur",
+      "proto",
+      "service",
+      "state",
+      "spkts",
+      "dpkts",
+      "sbytes",
+      "dbytes",
+      "rate",
+      "sload",
+      "dload",
+      "sloss",
+      "dloss",
+      "sinpkt",
+      "dinpkt",
+      "sjit",
+      "djit",
+      "swin",
+      "stcpb",
+      "dtcpb",
+      "dwin",
+      "tcprtt",
+      "synack",
+      "ackdat",
+      "smean",
+      "dmean",
+      "trans_depth",
+      "response_body_len",
+      "ct_src_dport_ltm",
+      "ct_dst_sport_ltm",
+      "is_ftp_login",
+      "ct_ftp_cmd",
+      "ct_flw_http_mthd",
+      "is_sm_ips_ports"
+    ]
+  },
+  "validation": {
+    "selected_threshold": 0.467277,
+    "f1_at_selected_threshold": 0.8786,
+    "roc_auc": 0.9735,
+    "pr_auc": 0.9615
+  },
+  "test": {
+    "roc_auc": 0.9724,
+    "pr_auc": 0.9602,
+    "threshold": 0.467277,
+    "accuracy": 0.9062,
+    "precision": 0.8748,
+    "recall": 0.8691,
+    "f1": 0.8719,
+    "false_positive_rate": 0.0723,
+    "true_positive": 3990,
+    "false_positive": 571,
+    "false_negative": 601,
+    "true_negative": 7332
+  },
+  "operating_points": {
+    "target_fpr_1pct": {
+      "threshold": 0.751031,
+      "accuracy": 0.899,
+      "precision": 0.9765,
+      "recall": 0.743,
+      "f1": 0.8439,
+      "false_positive_rate": 0.0104,
+      "true_positive": 3411,
+      "false_positive": 82,
+      "false_negative": 1180,
+      "true_negative": 7821
+    },
+    "target_fpr_5pct": {
+      "threshold": 0.533287,
+      "accuracy": 0.9128,
+      "precision": 0.9112,
+      "recall": 0.8449,
+      "f1": 0.8768,
+      "false_positive_rate": 0.0478,
+      "true_positive": 3879,
+      "false_positive": 378,
+      "false_negative": 712,
+      "true_negative": 7525
+    },
+    "target_fpr_10pct": {
+      "threshold": 0.387805,
+      "accuracy": 0.8976,
+      "precision": 0.8323,
+      "recall": 0.9035,
+      "f1": 0.8664,
+      "false_positive_rate": 0.1058,
+      "true_positive": 4148,
+      "false_positive": 836,
+      "false_negative": 443,
+      "true_negative": 7067
+    }
+  },
+  "per_attack_category": {
+    "Analysis": {
+      "rows": 97,
+      "recall": 1.0
+    },
+    "Backdoor": {
+      "rows": 74,
+      "recall": 0.9865
+    },
+    "DoS": {
+      "rows": 399,
+      "recall": 0.9424
+    },
+    "Exploits": {
+      "rows": 1871,
+      "recall": 0.9578
+    },
+    "Fuzzers": {
+      "rows": 1104,
+      "recall": 0.5879
+    },
+    "Generic": {
+      "rows": 411,
+      "recall": 0.9757
+    },
+    "Reconnaissance": {
+      "rows": 532,
+      "recall": 0.9831
+    },
+    "Shellcode": {
+      "rows": 92,
+      "recall": 0.7391
+    },
+    "Worms": {
+      "rows": 11,
+      "recall": 1.0
+    }
+  },
+  "top_feature_importances": [
+    {
+      "feature": "remainder__synack",
+      "importance": 0.08019
+    },
+    {
+      "feature": "remainder__tcprtt",
+      "importance": 0.07783
+    },
+    {
+      "feature": "remainder__dload",
+      "importance": 0.07646
+    },
+    {
+      "feature": "remainder__ackdat",
+      "importance": 0.05729
+    },
+    {
+      "feature": "remainder__sbytes",
+      "importance": 0.0545
+    },
+    {
+      "feature": "remainder__dbytes",
+      "importance": 0.05231
+    },
+    {
+      "feature": "remainder__dinpkt",
+      "importance": 0.05043
+    },
+    {
+      "feature": "remainder__smean",
+      "importance": 0.04952
+    },
+    {
+      "feature": "remainder__dmean",
+      "importance": 0.04849
+    },
+    {
+      "feature": "remainder__rate",
+      "importance": 0.04478
+    },
+    {
+      "feature": "remainder__sload",
+      "importance": 0.04447
+    },
+    {
+      "feature": "remainder__sinpkt",
+      "importance": 0.03465
+    },
+    {
+      "feature": "remainder__dur",
+      "importance": 0.03465
+    },
+    {
+      "feature": "remainder__djit",
+      "importance": 0.02959
+    },
+    {
+      "feature": "remainder__sjit",
+      "importance": 0.0266
+    },
+    {
+      "feature": "remainder__dpkts",
+      "importance": 0.02381
+    },
+    {
+      "feature": "categorical__state_INT",
+      "importance": 0.02141
+    },
+    {
+      "feature": "remainder__spkts",
+      "importance": 0.01924
+    },
+    {
+      "feature": "categorical__state_CON",
+      "importance": 0.01824
+    },
+    {
+      "feature": "remainder__dloss",
+      "importance": 0.018
+    }
+  ],
+  "caveat": "Only the UNSW-NB15 testing split was supplied. This benchmark trains and evaluates on random row-level partitions of that test file after duplicate removal. It is not a replacement for training on the official training split, and it does not validate deployment performance. Multiple rows may originate from the same original capture despite deduplication."
+}

@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 
 from ..db import get_db
 from ..models import Alert, FlowWindow
+from ..timeutils import ensure_utc
 from ..schemas import (
     AlertDetail,
     AlertOut,
@@ -35,8 +36,8 @@ def _alert_out(alert: Alert) -> AlertOut:
         title=alert.title,
         reasons=[FeatureOut(**item) for item in json.loads(alert.reasons_json)],
         status=alert.status,
-        created_at=alert.created_at,
-        updated_at=alert.updated_at,
+        created_at=ensure_utc(alert.created_at),
+        updated_at=ensure_utc(alert.updated_at),
     )
 
 
@@ -44,8 +45,8 @@ def _flow_out(flow: FlowWindow) -> FlowWindowOut:
     return FlowWindowOut(
         id=flow.id,
         source_ip=flow.source_ip,
-        window_start=flow.window_start,
-        window_end=flow.window_end,
+        window_start=ensure_utc(flow.window_start),
+        window_end=ensure_utc(flow.window_end),
         packet_count=flow.packet_count,
         byte_count=flow.byte_count,
         flow_count=flow.flow_count,
@@ -105,7 +106,7 @@ def summary(request: Request, db: Session = Depends(get_db)) -> SummaryOut:
     ).all()
     timeline = [
         TimelinePoint(
-            timestamp=row.window_start,
+            timestamp=ensure_utc(row.window_start),
             max_score=round(float(row.max_score), 2),
             packets=int(row.packets),
             bytes=int(row.bytes),
@@ -202,4 +203,5 @@ def reset_data(db: Session = Depends(get_db)) -> dict:
     db.query(FlowWindow).delete()
     db.commit()
     return {"status": "reset"}
+
 

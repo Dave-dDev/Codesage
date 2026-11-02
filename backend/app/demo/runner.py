@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+from datetime import datetime, timedelta, timezone
 from itertools import groupby
 
 from sqlalchemy import delete
@@ -68,12 +69,20 @@ class DemoRunner:
             for _, batch in groupby(windows, key=lambda item: item.window_start):
                 await asyncio.sleep(settings.demo_interval_seconds / max(speed, 0.25))
                 batch_list = list(batch)
+                # Replayed PCs are recorded traffic, not live events. Stamp each batch with
+                # the actual replay time so the chart, forensic table, and alert timestamps
+                # share the same wall-clock basis. The source PCAP remains the forensic record.
+                replay_time = datetime.now(timezone.utc)
                 for window in batch_list:
+                    window.window_start = replay_time
+                    window.window_end = replay_time + timedelta(seconds=settings.window_seconds)
                     await self.engine.ingest(window)
                     self.windows_delivered += 1
                 await self.broadcaster.broadcast("demo", self.status())
         finally:
             self.running = False
             await self.broadcaster.broadcast("demo", self.status())
+
+
 
 

@@ -109,6 +109,9 @@ Then open <http://127.0.0.1:8000>. FastAPI serves the built frontend from `front
 The **Normal** control replays only baseline traffic. The **Run attack replay** control replays a mixed
 capture with both baseline traffic and injected attacks.
 
+Replay events are stamped with their actual ingestion time so the timeline, forensic table, and alert
+relative times remain synchronized. The original PCAP is left unchanged.
+
 ## API
 
 | Method | Endpoint | Purpose |

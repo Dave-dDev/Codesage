@@ -11,6 +11,7 @@ from .db import SessionLocal
 from .features.extractor import FeatureWindow
 from .ml.detector import AnomalyDetector, DetectionResult
 from .models import Alert, FlowWindow
+from .timeutils import iso_utc
 from .ws import ConnectionManager
 
 
@@ -123,6 +124,7 @@ class DetectionEngine:
             "title": alert.title,
             "reasons": json.loads(alert.reasons_json),
             "status": alert.status,
-            "created_at": alert.created_at.isoformat(),
-            "updated_at": alert.updated_at.isoformat(),
+            "created_at": iso_utc(alert.created_at),
+            "updated_at": iso_utc(alert.updated_at),
         }
+

@@ -11,7 +11,7 @@ export function FlowTable({ flows }: FlowTableProps) {
       <table>
         <thead>
           <tr>
-            <th>Window</th>
+            <th>Window (local)</th>
             <th>Source</th>
             <th>Packets</th>
             <th>Volume</th>

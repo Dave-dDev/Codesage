@@ -1,0 +1,9 @@
+fastapi>=0.136,<1
+uvicorn[standard]>=0.41,<1
+sqlalchemy>=2.0,<3
+scapy>=2.6,<3
+scikit-learn>=1.7,<2
+numpy>=2.3,<3
+joblib>=1.5,<2
+pytest>=8.4,<9
+httpx>=0.28,<1

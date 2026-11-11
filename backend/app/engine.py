@@ -97,6 +97,16 @@ class DetectionEngine:
     @staticmethod
     def _alert_title(result: DetectionResult, window: FeatureWindow) -> str:
         features = window.features
+        if features.get("icmp_packet_ratio", 0) >= 0.6 or features.get("icmp_count", 0) >= 30:
+            return "ICMP flood pattern detected"
+        if features.get("rst_packet_ratio", 0) >= 0.5 or features.get("rst_count", 0) >= 30:
+            return "TCP RST storm detected"
+        if (
+            features.get("fin_count", 0) >= 15
+            and features.get("syn_count", 0) >= 15
+            and features.get("ack_count", 0) <= 5
+        ):
+            return "Connection exhaustion attempt detected"
         if features.get("dns_packet_ratio", 0) >= 0.5 and features.get("dns_query_count", 0) >= 20:
             return "DNS query burst detected"
         if features.get("syn_packet_ratio", 0) >= 0.75 and features.get("syn_count", 0) >= 100:
@@ -104,13 +114,17 @@ class DetectionEngine:
         if (
             features.get("ports_per_destination", 0) >= 10
             and features.get("unique_dst_ports", 0) >= 20
-        ):
+        ) or features.get("dst_port_entropy", 0) >= 3.5:
             return "Port-scan pattern detected"
         if features.get("packet_count", 0) >= 500 or features.get("packets_per_second", 0) >= 100:
             return "Traffic volume spike detected"
         names = [item.name for item in result.explanations]
-        if "unique_dst_ports" in names:
+        if "unique_dst_ports" in names or "dst_port_entropy" in names:
             return "Port-scan pattern detected"
+        if "icmp_count" in names or "icmp_packet_ratio" in names:
+            return "ICMP flood pattern detected"
+        if "rst_count" in names or "rst_packet_ratio" in names:
+            return "TCP RST storm detected"
         return "Anomalous traffic pattern detected"
 
     @staticmethod

@@ -5,7 +5,7 @@ import random
 import time
 from pathlib import Path
 
-from scapy.all import DNS, DNSQR, Ether, IP, TCP, UDP, wrpcap
+from scapy.all import DNS, DNSQR, Ether, ICMP, IP, TCP, UDP, wrpcap
 
 from ..config import settings
 
@@ -31,6 +31,18 @@ def _tcp_packet(
     )
     if payload_size:
         packet = packet / (b"x" * payload_size)
+    packet.time = timestamp
+    return packet
+
+
+def _icmp_packet(timestamp: float, src: str, dst: str, payload_size: int = 32):
+    packet = (
+        Ether()
+        / IP(src=src, dst=dst)
+        / ICMP(type=8, code=0)
+    )
+    if payload_size:
+        packet = packet / (b"p" * payload_size)
     packet.time = timestamp
     return packet
 
@@ -120,7 +132,7 @@ def generate_normal_pcap(path: Path, duration: int = 300, seed: int = 7) -> Path
     return path
 
 
-def generate_mixed_pcap(path: Path, duration: int = 120, seed: int = 19) -> Path:
+def generate_mixed_pcap(path: Path, duration: int = 160, seed: int = 19) -> Path:
     base_time = time.time() - duration
     packets: list = []
     _append_normal_traffic(packets, duration, base_time, seed)
@@ -165,6 +177,60 @@ def generate_mixed_pcap(path: Path, duration: int = 120, seed: int = 19) -> Path
                     base_time + second + offset * 0.021,
                     dns_attacker,
                     f"burst-{second}-{offset}.example",
+                )
+            )
+
+    icmp_flooder = "10.0.0.99"
+    # ICMP ping flood: rapid echo requests to exhaust bandwidth / host.
+    for second in range(95, 104):
+        for offset in range(48):
+            packets.append(
+                _icmp_packet(
+                    base_time + second + offset * 0.018,
+                    icmp_flooder,
+                    "10.0.0.101",
+                    payload_size=64,
+                )
+            )
+
+    rst_attacker = "10.0.0.55"
+    # TCP RST storm: rapid unsolicited resets attempting to tear down connections.
+    for second in range(112, 121):
+        for offset in range(40):
+            packets.append(
+                _tcp_packet(
+                    base_time + second + offset * 0.022,
+                    rst_attacker,
+                    "10.0.0.100",
+                    rng.randint(40000, 65000),
+                    80,
+                    "R",
+                )
+            )
+
+    exhaust_attacker = "10.0.0.44"
+    # Connection exhaustion / slowloris: continuous SYN attempts with dangling FINs and zero full data flows.
+    for second in range(128, 138):
+        for offset in range(18):
+            sport = 30000 + (second - 128) * 18 + offset
+            packets.append(
+                _tcp_packet(
+                    base_time + second + offset * 0.05,
+                    exhaust_attacker,
+                    "10.0.0.102",
+                    sport,
+                    8080,
+                    "S",
+                )
+            )
+            packets.append(
+                _tcp_packet(
+                    base_time + second + offset * 0.05 + 0.02,
+                    exhaust_attacker,
+                    "10.0.0.102",
+                    sport,
+                    8080,
+                    "F",
                 )
             )
 

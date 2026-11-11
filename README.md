@@ -103,6 +103,9 @@ Then open <http://127.0.0.1:8000>. FastAPI serves the built frontend from `front
    - a port scan from `10.0.0.66`
    - a SYN flood from `10.0.0.77`
    - a DNS query burst from `10.0.0.88`
+   - an ICMP ping flood from `10.0.0.99`
+   - a TCP RST storm from `10.0.0.55`
+   - a connection exhaustion attempt from `10.0.0.44`
 5. Open an alert to see the top feature deviations and supporting flow-window metrics.
 6. Acknowledge the alert or mark it as benign.
 
@@ -138,13 +141,13 @@ so that capture boundaries do not look anomalous.
 - packet and byte volume
 - flow count
 - unique destination IPs and ports
-- SYN, ACK, and RST counts
-- SYN/ACK ratio
-- SYN-to-packet and completed-handshake ratios
-- DNS query count and DNS-to-packet ratio
-- ports per destination
+- SYN, ACK, RST, and FIN counts
+- SYN/ACK and completed-handshake ratios
+- SYN, DNS, ICMP, and RST packet ratios
+- DNS query count and ICMP packet count
+- destination port entropy and ports per destination
 - TCP and UDP traffic shares
-- mean packet size
+- mean packet size and packet size variance
 - bytes per flow
 - packets per second
 
